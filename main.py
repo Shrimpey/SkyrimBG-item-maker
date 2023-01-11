@@ -6,8 +6,23 @@ import openpyxl
 import argparse
 
 parser = argparse.ArgumentParser(prog = 'Skyrim Item Generator')
-parser.add_argument('-f', '--file')
+parser.add_argument('-f', '--file', type=str)
+parser.add_argument('-fs', '--fontscale', type=float, default=1.0)
 args = parser.parse_args()
+
+fontScale = args.fontscale
+fontScale_specialLootQuestNumber = 55 * fontScale
+fontScale_itemName = 40 * fontScale
+fontScale_enchantmentCost = 55 * fontScale
+fontScale_upgradeAndEnchantmentCost = 40 * fontScale
+fontScale_itemPrice = 80 * fontScale
+fontScale_skillBoostText = 25 * fontScale
+fontScale_skillCost = 40 * fontScale
+fontScale_skillName = 25 * fontScale
+fontScale_resultNumber = 40 * fontScale
+fontScale_resultDamageNumber = 40 * fontScale
+fontScale_armorNumber = 45 * fontScale
+fontScale_itemDescription = 27 * fontScale
 
 itemData = []
 
@@ -50,7 +65,7 @@ for item in itemData:
 		base.composite(typeImage, 0, 0, co.OverCompositeOp)
 		# Take care of numbered quest items
 		if item["lootType"] == "S":
-			base.fontPointsize(55)
+			base.fontPointsize(fontScale_specialLootQuestNumber)
 			base.annotate(str(item["specialLootNumber"]), Geometry(1,1,80,80), GravityType.CenterGravity, -45)
 
 
@@ -59,35 +74,10 @@ for item in itemData:
 		base.composite(itemTypeImage, 0, 0, co.OverCompositeOp)
 
 		# Add item name
-		base.fontPointsize(40)
+		base.fontPointsize(fontScale_itemName)
 		base.fillColor("White")
 		base.annotate(item["itemName"], Geometry(1,1,260,90), GravityType.CenterGravity)
 		base.fillColor("Black")
-
-		# Add enchantment/upgrade costs
-		enchantmentCostImage = Image('.\Item_EnchantmentCost.png')
-		upgradeCostImage = Image('.\Item_EnchantmentUpgradeCost.png')
-		if int(item["upgradeCost"]) > 0:
-			base.composite(upgradeCostImage, 0, 0, co.OverCompositeOp)
-			base.fontPointsize(55)
-			base.annotate(str(item["enchantmentCost"]), Geometry(1,1,420,686), GravityType.CenterGravity)
-			base.fontPointsize(55)
-			base.annotate(str(item["upgradeCost"]), Geometry(1,1,460,715), GravityType.CenterGravity)
-		elif int(item["enchantmentCost"]) > 0:
-			base.composite(enchantmentCostImage, 0, 0, co.OverCompositeOp)
-			base.fontPointsize(65)
-			base.annotate(str(item["enchantmentCost"]), Geometry(1,1,432,700), GravityType.CenterGravity)
-
-
-		# Add price symbol
-		if int(item["cost"]) > 0:
-			priceImage = Image('.\Item_Price.png')
-			base.composite(priceImage, 0, 0, co.OverCompositeOp)
-
-			# Write item price
-			base.fontPointsize(85)
-			base.annotate(str(item["cost"]), Geometry(1,1,80,710), GravityType.CenterGravity)
-
 
 
 		# Add skills
@@ -108,24 +98,24 @@ for item in itemData:
 			im.draw(skill1BoostRect)
 			base.composite(im, 30, skillYVal - 26, co.OverCompositeOp)
 			# Boost text
-			base.fontPointsize(25)
+			base.fontPointsize(fontScale_skillBoostText)
 			base.annotate(str(item["skill1Boost"]), Geometry(1,1,71,skillYVal), GravityType.CenterGravity)
 			# Cost symbol
 			skill1CostSymbolImage = Image('.\Symbol_'+item["skill1CostSymbol"]+'.png')
 			skill1CostSymbolImage.resize('40x40')
 			base.composite(skill1CostSymbolImage, 165-20, skillYVal-20, co.OverCompositeOp)
 			# Cost number
-			base.fontPointsize(40)
+			base.fontPointsize(fontScale_skillCost)
 			base.annotate(str(item["skill1Cost"]), Geometry(1,1,132,skillYVal), GravityType.CenterGravity)
 			# Name text
-			base.fontPointsize(25)
+			base.fontPointsize(fontScale_skillName)
 			base.annotate(str(item["skill1Name"]), Geometry(1,1,234,skillYVal), GravityType.CenterGravity)
 			# Result symbol
 			skill1ResultSymbolImage = Image('.\Symbol_'+item["skill1ResultSymbol"]+'.png')
 			skill1ResultSymbolImage.resize('40x40')
 			base.composite(skill1ResultSymbolImage, 324-20, skillYVal-20, co.OverCompositeOp)
 			# Result number
-			base.fontPointsize(40)
+			base.fontPointsize(fontScale_resultNumber)
 			base.annotate(str(item["skill1Result"]), Geometry(1,1,297,skillYVal), GravityType.CenterGravity)
 			# Damage symbol 1
 			if item["skill1ResultDamageSymbol1"] != "":
@@ -143,7 +133,7 @@ for item in itemData:
 				skill1ResultDamageSymbol3Image.resize('40x40')
 				base.composite(skill1ResultDamageSymbol3Image, 468-20, skillYVal - 20, co.OverCompositeOp)
 			# Damage number text
-			base.fontPointsize(40)
+			base.fontPointsize(fontScale_resultDamageNumber)
 			base.annotate(str(item["skill1ResultDamage"]), Geometry(1,1,367,skillYVal), GravityType.CenterGravity)
 
 
@@ -156,24 +146,24 @@ for item in itemData:
 				im.draw(skill2BoostRect)
 				base.composite(im, 30, skillYVal - 26, co.OverCompositeOp)
 				# Boost text
-				base.fontPointsize(25)
+				base.fontPointsize(fontScale_skillBoostText)
 				base.annotate(str(item["skill2Boost"]), Geometry(1,1,71,skillYVal), GravityType.CenterGravity)
 				# Cost symbol
 				skill2CostSymbolImage = Image('.\Symbol_'+item["skill2CostSymbol"]+'.png')
 				skill2CostSymbolImage.resize('40x40')
 				base.composite(skill2CostSymbolImage, 165-20, skillYVal-20, co.OverCompositeOp)
 				# Cost number
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_skillCost)
 				base.annotate(str(item["skill2Cost"]), Geometry(1,1,132,skillYVal), GravityType.CenterGravity)
 				# Name text
-				base.fontPointsize(25)
+				base.fontPointsize(fontScale_skillName)
 				base.annotate(str(item["skill2Name"]), Geometry(1,1,234,skillYVal), GravityType.CenterGravity)
 				# Result symbol
 				skill2ResultSymbolImage = Image('.\Symbol_'+item["skill2ResultSymbol"]+'.png')
 				skill2ResultSymbolImage.resize('40x40')
 				base.composite(skill2ResultSymbolImage, 324-20, skillYVal-20, co.OverCompositeOp)
 				# Result number
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_resultNumber)
 				base.annotate(str(item["skill2Result"]), Geometry(1,1,297,skillYVal), GravityType.CenterGravity)
 				# Damage symbol 1
 				if item["skill2ResultDamageSymbol1"] != "":
@@ -191,7 +181,7 @@ for item in itemData:
 					skill2ResultDamageSymbol3Image.resize('40x40')
 					base.composite(skill2ResultDamageSymbol3Image, 468-20, skillYVal - 20, co.OverCompositeOp)
 				# Damage number text
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_resultDamageNumber)
 				base.annotate(str(item["skill2ResultDamage"]), Geometry(1,1,367,skillYVal), GravityType.CenterGravity)
 
 
@@ -205,24 +195,24 @@ for item in itemData:
 				im.draw(skill3BoostRect)
 				base.composite(im, 30, skillYVal - 26, co.OverCompositeOp)
 				# Boost text
-				base.fontPointsize(25)
+				base.fontPointsize(fontScale_skillBoostText)
 				base.annotate(str(item["skill3Boost"]), Geometry(1,1,71,skillYVal), GravityType.CenterGravity)
 				# Cost symbol
 				skill3CostSymbolImage = Image('.\Symbol_'+item["skill3CostSymbol"]+'.png')
 				skill3CostSymbolImage.resize('40x40')
 				base.composite(skill3CostSymbolImage, 165-20, skillYVal-20, co.OverCompositeOp)
 				# Cost number
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_skillCost)
 				base.annotate(str(item["skill3Cost"]), Geometry(1,1,132,skillYVal), GravityType.CenterGravity)
 				# Name text
-				base.fontPointsize(25)
+				base.fontPointsize(fontScale_skillName)
 				base.annotate(str(item["skill3Name"]), Geometry(1,1,234,skillYVal), GravityType.CenterGravity)
 				# Result symbol
 				skill3ResultSymbolImage = Image('.\Symbol_'+item["skill3ResultSymbol"]+'.png')
 				skill3ResultSymbolImage.resize('40x40')
 				base.composite(skill3ResultSymbolImage, 324-20, skillYVal-20, co.OverCompositeOp)
 				# Result number
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_resultNumber)
 				base.annotate(str(item["skill3Result"]), Geometry(1,1,297,skillYVal), GravityType.CenterGravity)
 				# Damage symbol 1
 				if item["skill3ResultDamageSymbol1"] != "":
@@ -240,7 +230,7 @@ for item in itemData:
 					skill3ResultDamageSymbol3Image.resize('40x40')
 					base.composite(skill2ResultDamageSymbol3Image, 468-20, skillYVal - 20, co.OverCompositeOp)
 				# Damage number text
-				base.fontPointsize(40)
+				base.fontPointsize(fontScale_resultDamageNumber)
 				base.annotate(str(item["skill3ResultDamage"]), Geometry(1,1,367,skillYVal), GravityType.CenterGravity)
 
 
@@ -253,20 +243,20 @@ for item in itemData:
 		magicArmorImage.resize('50x50')
 		base.fillColor("White")
 		if item["armorHeavy"] > 0:
-			base.fontPointsize(45)
+			base.fontPointsize(fontScale_armorNumber)
 			base.annotate(str(item["armorHeavy"]), Geometry(1,1,150,700), GravityType.CenterGravity)
 			base.composite(heavyArmorImage, 188-25, 700-25, co.OverCompositeOp)
 		if item["armorLight"] > 0:
-			base.fontPointsize(45)
+			base.fontPointsize(fontScale_armorNumber)
 			base.annotate(str(item["armorLight"]), Geometry(1,1,238,700), GravityType.CenterGravity)
 			base.composite(lightArmorImage, 275-25, 700-25, co.OverCompositeOp)
 		if item["armorMagic"] > 0:
-			base.fontPointsize(45)
+			base.fontPointsize(fontScale_armorNumber)
 			base.annotate(str(item["armorMagic"]), Geometry(1,1,310,700), GravityType.CenterGravity)
 			base.composite(magicArmorImage, 349-25, 700-25, co.OverCompositeOp)
 
 		# Item description
-		base.fontPointsize(27)
+		base.fontPointsize(fontScale_itemDescription)
 		if item["skill3Name"] != "":
 			base.annotate(str(item["itemDescription"]), Geometry(1,1,250,628), GravityType.CenterGravity)
 		elif item["skill2Name"] != "":
@@ -274,6 +264,48 @@ for item in itemData:
 		else:
 			base.annotate(str(item["itemDescription"]), Geometry(1,1,250,550), GravityType.CenterGravity)
 		base.fillColor("Black")
+
+
+
+		# Add enchantment/upgrade costs
+		enchantmentCostImage = Image('.\Item_EnchantmentCost.png')
+		upgradeCostImage = Image('.\Item_EnchantmentUpgradeCost.png')
+		base.fillColor("White")
+		base.strokeColor("Black")
+		base.strokeWidth(0.5)
+		if int(item["upgradeCost"]) > 0:
+			base.composite(upgradeCostImage, 0, 0, co.OverCompositeOp)
+			base.fontPointsize(fontScale_upgradeAndEnchantmentCost)
+			base.annotate(str(item["enchantmentCost"]), Geometry(1,1,410,696), GravityType.CenterGravity)
+			enchantmentSymbolImage = Image('.\Symbol_Gem.png')
+			enchantmentSymbolImage.resize('40x40')
+			base.composite(enchantmentSymbolImage, 440-20, 680 - 20, co.OverCompositeOp)
+			base.fontPointsize(fontScale_upgradeAndEnchantmentCost)
+			base.annotate(str(item["upgradeCost"]), Geometry(1,1,440,735), GravityType.CenterGravity)
+			upgradeSymbolImage = Image('.\Symbol_Stone.png')
+			upgradeSymbolImage.resize('40x40')
+			base.composite(upgradeSymbolImage, 470-20, 715 - 20, co.OverCompositeOp)
+		elif int(item["enchantmentCost"]) > 0:
+			base.composite(enchantmentCostImage, 0, 0, co.OverCompositeOp)
+			base.fontPointsize(fontScale_enchantmentCost)
+			base.annotate(str(item["enchantmentCost"]), Geometry(1,1,422,700), GravityType.CenterGravity)
+			enchantmentSymbolImage = Image('.\Symbol_Gem.png')
+			enchantmentSymbolImage.resize('60x60')
+			base.composite(enchantmentSymbolImage, 462-30, 700 - 30, co.OverCompositeOp)
+
+		base.strokeWidth(0.5)
+		base.strokeColor("White")
+		base.fillColor("Black")
+		# Add price symbol
+		if int(item["cost"]) > 0:
+			priceImage = Image('.\Item_Price.png')
+			base.composite(priceImage, 0, 0, co.OverCompositeOp)
+
+			# Write item price
+			base.fontPointsize(fontScale_itemPrice)
+			base.annotate(str(item["cost"]), Geometry(1,1,80,710), GravityType.CenterGravity)
+
+		base.strokeWidth(0.0)
 
 		# Write output
 		base.write('./output/item_'+tempItemName+'.png')
